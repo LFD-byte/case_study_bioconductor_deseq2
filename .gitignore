@@ -1,0 +1,19 @@
+# Data and rebuildable outputs
+data/raw/*
+data/processed/*
+results/tables/*
+results/figures/*
+!**/README.md
+
+# LaTeX build files
+*.aux
+*.bbl
+*.blg
+*.log
+*.out
+
+# R and system files
+.Rhistory
+.RData
+.Rproj.user/
+.DS_Store

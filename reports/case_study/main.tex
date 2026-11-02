@@ -1,0 +1,52 @@
+\documentclass{article}
+
+% Language setting
+\usepackage[english]{babel}
+
+% Set page size and margins
+\usepackage[letterpaper,top=1.7cm,bottom=1.7cm,left=2.5cm,right=2.5cm,marginparwidth=1.75cm]{geometry}
+
+% Useful packages
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+
+\title{Case Study: Bioconductor and DESeq2}
+\author{Huifa Li\thanks{AI use declaration: Claude (Anthropic) was used to explain the assignment requirements, to translate my Chinese draft of this report into English, to polish the text, and to run the code.}}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section{Background and Understanding}
+
+Bioconductor was born in 2004, at a time when people were increasingly aware of the computational nature of many biological processes and of the great practical value of computational and statistical models. In addition, advances in high-throughput data acquisition placed higher computational and statistical demands on every stage of the biological research workflow. The main goal of the Bioconductor project is to create a durable and flexible software development and deployment environment that can meet these new conceptual, computational and inferential challenges~\cite{gentleman2004}.
+
+\section{Identification of Open Practices}
+
+From its inception, Bioconductor has been concerned with the problem of reproducible research. In computational biology and bioinformatics (CBB), publishing the data on which an article is based is gradually becoming the norm. This practice provides one of the elements required for reproducible research: access to the data. Another important element is access to the software used to transform the data, together with the explicit instructions or commands used to generate the outputs on which a paper's conclusions rest. The mature platform independence of the R language, combined with Bioconductor's packaging and documentation standards, forms a system that can distribute data with runnable code and scripts, thereby meeting most of the needs of reproducible and replicable research in CBB~\cite{gentleman2004}. Bioconductor conforms closely to the FAIR principles (Findable, Accessible, Interoperable, Reusable)~\cite{wilkinson2016}.
+
+Every officially released Bioconductor package receives its own official DOI and a stable landing-page URL. Developers are also required to use standardized, hierarchical biocViews classification tags (covering genomics, single-cell, proteomics and more) in the package metadata (the DESCRIPTION file), which makes packages easy for both humans and machines to search. These measures make Bioconductor findable.
+
+All Bioconductor packages, source code and documentation can be obtained freely and without barriers through the standard HTTPS protocol, the R command-line tool (\texttt{BiocManager::install()}) and the Git version control system (\texttt{git.bioconductor.org}), with no special permissions required. Even if a package is deprecated or removed because it is no longer maintained, its historical versions, metadata and code archives remain on the official servers, ensuring that analysis workflows in older literature stay traceable. These measures guarantee Bioconductor's accessibility.
+
+Bioconductor enforces and promotes shared core data containers, such as GRanges for genomic intervals, SummarizedExperiment for sequencing matrices, SingleCellExperiment for single-cell data and Spectra for mass spectrometry data. This allows hundreds of packages developed by different teams to be chained together seamlessly without repeated format conversion. It also natively supports the standard file formats of bioinformatics (BAM, VCF, GFF, FASTQ, HDF5 and others). These measures guarantee Bioconductor's interoperability.
+
+Bioconductor requires every accepted package to declare an explicit open-source license (such as Artistic-2.0, GPL or MIT), safeguarding the lawful reuse and modification of the code. It also requires every package to provide tutorial documents (vignettes) containing real executable code that demonstrate a complete biological analysis workflow, rather than only isolated function manuals. These requirements guarantee Bioconductor's reusability.
+
+\section{Evidence-Based Assessment of Impact}
+
+Bioconductor has now reached version 3.23, with a total of 3,818 packages, and its original paper has been cited 15,311 times~\cite{gentleman2004,biocsite}. DESeq2 is one of the most central R packages in the Bioconductor ecosystem and is designed specifically for differential expression analysis of high-throughput sequencing data (such as RNA-seq)~\cite{love2014}. It and Bioconductor are both currently at version 3.23. It is now a commonly used tool for differential expression analysis and has 1,246 citations.
+
+\section{Critical Discussion of Limitations}
+
+For reproducible science, Bioconductor currently has the following problems. First, Bioconductor versions must correspond strictly to major versions of R. For example, if you want to use the latest version of a Bioconductor package, you must upgrade your entire R environment to the latest version. If you are using an older version of R, \texttt{BiocManager::install()} will by default install older versions of Bioconductor packages, which sometimes means you cannot use a new version in which the author has just fixed a bug or added a feature. Second, many Bioconductor packages contain low-level C++ or Fortran code. On Linux servers or newer Mac chips, they often have to be compiled from source, which takes a very long time and frequently fails with errors because a low-level system library is missing. Finally, in environments with poor network connections, downloading these large files through the R terminal is very prone to interruption, leading to failed installations or corrupted data. So even when accessibility is satisfied, installing R packages can still fail for practical reasons.
+
+\section{Hands-On Exploration of the Open Resource}
+
+We used the airway dataset provided with Bioconductor as an example. The dataset consists of human airway smooth muscle cells under two conditions, treated with dexamethasone and untreated~\cite{himes2014}. We installed the R environment and the Bioconductor packages with conda. Using DESeq2 to compare gene expression between the treated and untreated groups, we first kept genes with count $\geq 10$ in at least 4 samples (16,139 genes in total), then ran \texttt{DESeq()} for differential testing and selected differentially expressed genes with the thresholds padj $< 0.05$ and $|\log_2\mathrm{FC}| > 1$. The results show that 4,081 genes had padj $< 0.05$ (2,190 upregulated and 1,891 downregulated), of which 951 also met the fold-change threshold (490 upregulated and 461 downregulated). PCA shows that PC1 explains 48\% of the variance and completely separates the treated group from the untreated group, indicating that dexamethasone treatment is the main source of expression differences between samples. The code and results have been uploaded to the GitHub repository \href{https://github.com/LFD-byte/case_study_bioconductor_deseq2}{case\_study\_bioconductor\_deseq2}. I plan to apply the DESeq2 package to the omics data I analyze. I also plan to record the exact R, Bioconductor and package versions in an exported conda environment file, so that my analyses can be rerun despite the version constraints discussed above. In addition, I will share my code and results in a public repository, as I did for this case study, so that others can check and reuse them.
+
+\bibliographystyle{unsrt}
+\bibliography{references}
+
+\end{document}
